@@ -1,22 +1,35 @@
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+function App() {
+  const handleSubmit = async () => {
+    const task = {
+      name: "Leer 20 minutos",
+      points: 10,
+      mood_before: "cansado",
+      mood_after: "mejor"
+    }
 
-app = FastAPI()
+    const res = await fetch("http://localhost:8000/task", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(task)
+    })
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    const data = await res.json()
+    alert(data.status)
+  }
 
-@app.get("/")
-def root():
-    return {"message": "RaízXP API is working!"}
+  return (
+    <div className="p-4 font-sans text-center">
+      <h1 className="text-2xl font-bold text-green-600">RaízXP</h1>
+      <button 
+        className="mt-6 bg-green-500 text-white px-4 py-2 rounded"
+        onClick={handleSubmit}>
+        Enviar tarea de prueba
+      </button>
+    </div>
+  )
+}
 
-@app.post("/task")
-def add_task(task: dict):
-    # Aquí va tu lógica
-    return {"status": "task received"}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
