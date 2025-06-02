@@ -18,6 +18,9 @@ import {
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
+// Configure axios defaults
+axios.defaults.baseURL = 'http://localhost:8000';
+
 interface Task {
     task: string;
     motivation: string;
@@ -84,13 +87,16 @@ const AIDashboard: React.FC = () => {
                     energy_level: energyLevel,
                 },
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
                 }
             );
             setTask(response.data);
-        } catch (err) {
-            setError('Failed to generate task');
-            console.error(err);
+        } catch (err: any) {
+            setError(err.response?.data?.detail || 'Failed to generate task');
+            console.error('Error generating task:', err);
         } finally {
             setLoading(false);
         }
