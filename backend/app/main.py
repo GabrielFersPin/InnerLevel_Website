@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from typing import List
 from . import models, schemas, auth
 from .database import engine, get_db
+from .api import ai  # Import the AI router
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -23,6 +24,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(ai.router)  # Add the AI router
 
 # Authentication endpoints
 @app.post("/token", response_model=schemas.Token)
